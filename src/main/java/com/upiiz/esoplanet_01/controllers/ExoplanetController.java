@@ -27,12 +27,16 @@ public class ExoplanetController {
     @PostMapping("/classify")
     public ResponseEntity<?> classifyExoplanet(@RequestBody Map<String, Object> datos) {
         try {
-            ResponseEntity<Object> response = restTemplate.postForEntity(fastApiUrl, datos, Object.class);
-            return ResponseEntity.ok(response.getBody());
-        } catch (Exception e) {
-            System.out.println("Error detallado en la llamada a la IA: " + e.getMessage());
-            String jsonError = "{\"error\": \"Error al comunicarse con el modelo de IA\"}";
-            return ResponseEntity.status(500).body(jsonError);
-        }
+        System.out.println("Llamando a: " + fastApiUrl);
+        System.out.println("Datos: " + datos);
+        ResponseEntity<Object> response = restTemplate.postForEntity(fastApiUrl, datos, Object.class);
+        return ResponseEntity.ok(response.getBody());
+    } catch (HttpStatusCodeException e) {
+        System.out.println("HTTP " + e.getStatusCode() + " -> " + e.getResponseBodyAsString());
+        return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(500).body(Map.of("error", e.toString()));
+    }
     }
 }
