@@ -14,7 +14,7 @@ public class ExoplanetController {
 
     private final RestTemplate restTemplate;
 
-    @Value("${ia.api.url:https://gloriaitzel0609-exoplanet_ia.hf.space/predict}")
+    @Value("${ia.api.url:https://gloriaitzel0609-exoplanet-ia.hf.space/predict}")
     private String fastApiUrl;
 
     public ExoplanetController() {
