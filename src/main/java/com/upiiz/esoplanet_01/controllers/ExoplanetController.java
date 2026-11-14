@@ -1,9 +1,12 @@
 package com.upiiz.esoplanet_01;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.Map;
 
 @RestController
@@ -22,21 +25,25 @@ public class ExoplanetController {
         factory.setReadTimeout(60000);
         this.restTemplate = new RestTemplate(factory);
     }
-    @PostMapping("/classify")
-public ResponseEntity<?> classifyExoplanet(@RequestBody Map<String, Object> datos) {
-    try {
-        System.out.println("Llamando a: " + fastApiUrl);
-        System.out.println("Datos: " + datos);
-        ResponseEntity<Object> response = restTemplate.postForEntity(fastApiUrl, datos, Object.class);
-        return ResponseEntity.ok(response.getBody());
-    } catch (HttpStatusCodeException e) {
-        System.out.println("HTTP " + e.getStatusCode() + " -> " + e.getResponseBodyAsString());
-        return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
-    } catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(500).body(Map.of("error", e.toString()));
-    }
-}
 
-    
+    @GetMapping("/ping")
+    public String ping() {
+        return "ok v2";
+    }
+
+    @PostMapping("/classify")
+    public ResponseEntity<?> classifyExoplanet(@RequestBody Map<String, Object> datos) {
+        try {
+            System.out.println("Llamando a: " + fastApiUrl);
+            System.out.println("Datos: " + datos);
+            ResponseEntity<Object> response = restTemplate.postForEntity(fastApiUrl, datos, Object.class);
+            return ResponseEntity.ok(response.getBody());
+        } catch (HttpStatusCodeException e) {
+            System.out.println("HTTP " + e.getStatusCode() + " -> " + e.getResponseBodyAsString());
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", e.toString()));
+        }
+    }
 }
